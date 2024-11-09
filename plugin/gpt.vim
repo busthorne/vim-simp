@@ -1,15 +1,15 @@
-if !exists('g:gpt_buffer_prefix')
-	let g:gpt_buffer_prefix = 'Chat'
+if !exists('g:simp_buffer_prefix')
+	let g:simp_buffer_prefix = 'Cable'
 endif
-if !exists('g:gpt_tail')
-	let g:gpt_tail = 0
+if !exists('g:simp_tail')
+	let g:simp_tail = 0
 endif
 
 fun! s:new_buffer() abort
-	let g:gpt_tail += 1
-	let name = g:gpt_buffer_prefix . g:gpt_tail
+	let g:simp_tail += 1
+	let name = g:simp_buffer_prefix . g:simp_tail
 	let buf = bufnr(name, 1)
-	call setbufvar(buf, '&filetype', 'gpt')
+	call setbufvar(buf, '&filetype', 'simp')
 	call setbufvar(buf, '&buftype', 'nofile')
 	call setbufvar(buf, '&bufhidden', 'hide')
 	call setbufvar(buf, '&swapfile', 0)
@@ -27,7 +27,7 @@ endfun
 
 fun! s:fzf_chat_lines()
 	let res = []
-	for b in filter(range(1, bufnr('$')), 'buflisted(v:val) && bufname(v:val) =~ "^' . g:gpt_buffer_prefix . '"')
+	for b in filter(range(1, bufnr('$')), 'buflisted(v:val) && bufname(v:val) =~ "^' . g:simp_buffer_prefix . '"')
 		call extend(res, map(getbufline(b,0,"$"), 'b . ":\t" . (v:key + 1) . ":\t" . v:val '))
 	endfor
 	return res
@@ -42,8 +42,8 @@ fun! s:errcheck(job, data)
 	endif
 endfun
 
-fun! gpt#scratch(...) abort
-	let tpl = get(g:, 'gpt_default_register', '')
+fun! simp#scratch(...) abort
+	let tpl = get(g:, 'simp_default_register', '')
 	if a:0 > 0
 		let tpl = a:1
 	endif
@@ -57,23 +57,23 @@ fun! gpt#scratch(...) abort
 	endif
 endfun
 
-fun! gpt#instant() abort
-	let model = get(g:, 'gpt_default_model', 'model=gpt-4o')
-	let opts = get(g:, 'gpt_default_opts', '')
-	call gpt#job(model, opts)
+fun! simp#instant() abort
+	let model = get(g:, 'simp_default_model', 'gpt-4o')
+	let opts = get(g:, 'simp_default_opts', '')
+	call simp#job(model, opts)
 endfun
 
-fun! gpt#dialog() abort
-	let def_model = get(g:, 'gpt_default_dialog_model', 'model=gpt-4o')
-	let def_opts = get(g:, 'gpt_default_dialog_opts', '0.5 1024')
-	let model = input('model [3,4,model=]: ', def_model)
+fun! simp#dialog() abort
+	let def_model = get(g:, 'simp_default_dialog_model', 'gpt-4o')
+	let def_opts = get(g:, 'simp_default_dialog_opts', '0.5 1024')
+	let model = input('model: ', def_model)
 	let opts = input('[temperature max_length top_p fpen ppen]: ', def_opts)
 	redraw
-	call gpt#job(model, opts)
+	call simp#job(model, opts)
 endfun
 
-fun! gpt#job(model, opts) abort
-	let command = &shell . ' -c "gpt -vim -' . a:model . ' ' . a:opts . '"'
+fun! simp#job(model, opts) abort
+	let command = &shell . ' -c "simp -vim ' . a:model . ' ' . a:opts . '"'
 	let job_options = {
 			\ 'noblock': 1,
 			\ 'in_io': 'buffer',
@@ -86,18 +86,18 @@ fun! gpt#job(model, opts) abort
 			\ 'err_cb': function('s:errcheck')
 			\ }
 	let job_id = job_start(command, job_options)
-	echomsg 'GPT-' . a:model . '...'
+	echomsg 'simping: ' . a:model . '...'
 endfun
 
-fun! gpt#history()
+fun! simp#history()
 	call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case "" ' . $OPENAI_LOG_DIR, 1, fzf#vim#with_preview())
 endfun
 
-command! -nargs=? Gpt call gpt#scratch(<f-args>)
-command! GptDefault call gpt#instant()
-command! GptDialog call gpt#dialog()
-command! GptBuffers call fzf#run({
+command! -nargs=? Simp call simp#scratch(<f-args>)
+command! SimpDefault call simp#instant()
+command! SimpDialog call simp#dialog()
+command! SimpBuffers call fzf#run({
 			\   'source':  <sid>fzf_chat_lines(),
 			\   'sink':    function('<sid>fzf_reveal_buffer'),
 			\})
-command! GptHistory call gpt#history()
+command! SimpHistory call simp#history()

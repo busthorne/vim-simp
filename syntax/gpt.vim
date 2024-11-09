@@ -1,16 +1,16 @@
 " Vim syntax file
-" Language:     Markdown-GPT
-" Maintainer:   Ilya Kowalewski <https://github.com/tucnak/gpt.vim>
+" Language:     Markdown-Simp
+" Maintainer:   Ilya Kowalewski <https://github.com/busthorne/vim-simp>
 " OG Author:    Tim Pope <https://github.com/tpope/vim-markdown>
-" Filenames:    *.gpt
-" Last Change:  2022 Oct 13
+" Filenames:    *.simp.md
+" Last Change:  2024 Nov 10
 
 if exists("b:current_syntax")
   finish
 endif
 
 if !exists('main_syntax')
-  let main_syntax = 'gpt'
+  let main_syntax = 'simp'
 endif
 
 if has('folding')
@@ -146,10 +146,10 @@ endif
 
 syn match markdownEscape "\\[][\\`*_{}()<>#+.!-]"
 syn match markdownError "\w\@<=_\w\@="
-syn match gptPrompt />>>>>>/
-syn match gptContinuation /<<<<<</
-hi def link gptPrompt htmlH1
-hi def link gptContinuation htmlH1
+syn match simpPrompt />>>>>>/
+syn match simpContinuation /<<<<<</
+hi def link simpPrompt htmlH1
+hi def link simpContinuation htmlH1
 
 hi def link markdownH1                    htmlH1
 hi def link markdownH2                    htmlH2
@@ -196,8 +196,8 @@ hi def link markdownCodeDelimiter         Delimiter
 hi def link markdownEscape                Special
 hi def link markdownError                 Error
 
-let b:current_syntax = "gpt"
-if main_syntax ==# "gpt"
+let b:current_syntax = "simp"
+if main_syntax ==# "simp"
   unlet main_syntax
 endif
 

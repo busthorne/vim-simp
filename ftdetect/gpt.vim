@@ -1,2 +1,2 @@
-au BufRead,BufNewFile *.gpt.txt set ft=gpt
-au BufRead,BufNewFile *.gpt set ft=gpt
+au BufRead,BufNewFile *.simp.md set ft=simp
+au BufRead,BufNewFile *.simp set ft=simp
