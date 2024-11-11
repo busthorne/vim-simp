@@ -146,10 +146,13 @@ endif
 
 syn match markdownEscape "\\[][\\`*_{}()<>#+.!-]"
 syn match markdownError "\w\@<=_\w\@="
-syn match simpPrompt />>>>>>/
-syn match simpContinuation /<<<<<</
+syn match simpPrompt />\{3,\}/
+syn match simpContinuation /<\{3,\}/
+syn match simpContinuationLine /<\{3,\}\s\+.*$/ contains=simpContinuation,simpMetadata
+syn match simpMetadata /\s\+.*$/ contained conceal
 hi def link simpPrompt htmlH1
 hi def link simpContinuation htmlH1
+hi def link simpMetadata Comment
 
 hi def link markdownH1                    htmlH1
 hi def link markdownH2                    htmlH2
